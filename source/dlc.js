@@ -384,14 +384,10 @@ dlc.Container = class {
             }
         }
         const stream = context.stream;
-        switch (dlc.Container._signature(stream)) {
-            case '1.NETD':
-            case '3.NETD':
-            case '4.NETD':
+        switch (dlc.Container._signature(stream).split('.').pop()) {
+            case 'NETD':
                 return new dlc.Container(stream, null, null);
-            case '1.NETP':
-            case '3.NETP':
-            case '4.NETP':
+            case 'NETP':
                 return new dlc.Container(null, stream, null);
             default:
                 return null;
@@ -420,7 +416,7 @@ dlc.Container = class {
                 case '2': {
                     throw new dlc.Error("Unsupported DLC format '0x00020AD5'.");
                 }
-                case '1.NETD': {
+                case 'NETD': {
                     const buffer = stream.peek();
                     const reader = flatbuffers.BinaryReader.open(buffer);
                     this._model = dlc.schema.NetDef.decode(reader, reader.root);
@@ -452,7 +448,7 @@ dlc.Container = class {
                 case '2': {
                     throw new dlc.Error("Unsupported DLC format '0x00020AD5'.");
                 }
-                case '1.NETP': {
+                case 'NETP': {
                     const buffer = stream.peek();
                     const reader = flatbuffers.BinaryReader.open(buffer);
                     this._params = dlc.schema.NetParam.decode(reader, reader.root);
@@ -506,9 +502,9 @@ dlc.Container = class {
         }
         if (buffer.length >= 8) {
             const reader = flatbuffers.BinaryReader.open(buffer);
-            return '1.' + reader.identifier;
+            return reader.identifier;
         }
-        return '0';
+        return '';
     }
 };
 
